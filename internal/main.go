@@ -55,10 +55,16 @@ func spider() {
 }
 func main() {
 
+	//config logger and create a logger
+
 	for i := 0; i < 200; i++ {
 		go spider()
 	}
 	select {}
+}
+
+func quick_sort() {
+
 }
 
 func deferMe() (x int) {
@@ -76,4 +82,11 @@ func intSeq() func() func() {
 
 		}
 	}
+}
+
+func fib(n int) int {
+	if n < 2 {
+		return n
+	}
+	return fib(n-1) + fib(n-2)
 }
