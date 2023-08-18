@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type Person struct {
@@ -53,14 +55,47 @@ func spider() {
 	// 输出搜索结果
 	fmt.Println(bodyStr)
 }
+
+//func main() {
+//
+//	//config logger and create a logger
+//
+//	for i := 0; i < 200; i++ {
+//		go spider()
+//	}
+//	select {}
+//}
+
 func main() {
+	// Create a background context
+	ctx := context.Background()
 
-	//config logger and create a logger
+	// Create a child context with a timeout of 2 seconds
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, 1*time.Second)
 
-	for i := 0; i < 200; i++ {
-		go spider()
+	// Start a goroutine to perform some work
+	go performWork(ctxWithTimeout)
+
+	// Wait for a key press to exit
+	time.Sleep(1 * time.Second)
+	cancel()
+}
+
+func performWork(ctx context.Context) {
+	// Check if the context is canceled
+	select {
+	case <-ctx.Done():
+		fmt.Println("Work canceled:", ctx.Err())
+		return
+	default:
+		// Simulate some work
+
+		time.Sleep(10 * time.Second)
+
+		fmt.Println("Work completed!")
 	}
-	select {}
+	deadline, ok := ctx.Deadline()
+	fmt.Println(deadline, ok)
 }
 
 func quick_sort() {
